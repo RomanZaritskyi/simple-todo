@@ -27,16 +27,13 @@ export class TodoController {
     }
   }
 
-  async updateTodo(id: number, todoData: Todo): Promise<void> {
+  async updateTodo(id: number, data: Partial<Todo>): Promise<void> {
     try {
-      const updatedTodo = await TodoModel.update(id, todoData)
-      const index = this.todos.findIndex((todo) => todo.id === id)
-      if (index !== -1) {
-        this.todos[index] = updatedTodo
-        this.onUpdate(this.todos)
-      }
+      const updated = await TodoModel.update(id, data)
+      this.todos = this.todos.map((t) => (t.id === id ? updated : t))
+      this.onUpdate(this.todos)
     } catch (error) {
-      console.error('Помилка при оновленні задачі:', error)
+      console.error('Помилка при оновленні:', error)
     }
   }
 

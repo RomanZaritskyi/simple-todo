@@ -1,7 +1,7 @@
 from sqlmodel import Session, select
 
 from app.models.todo import Todo
-from app.schemas.todo import TodoCreate
+from app.schemas.todo import TodoCreate, TodoUpdate
 
 
 def get_all_todos(session: Session) -> list[Todo]:
@@ -32,12 +32,16 @@ def delete_todo(session: Session, todo_id: int) -> Todo | None:
     return todo
 
 
-def update_todo(session: Session, todo_id: int, todo_update: TodoCreate) -> Todo | None:
-    todo = get_todo_by_id(session, todo_id)
-    if todo:
-        todo_data = Todo.model_validate(todo_update)
+def update_todo(db: Session, todo_id: int, todo_data: TodoUpdate) -> Todo:
+    todo = db.exec(Todo).filter(Todo.id == todo_id).first()
+    if not todo:
+        raise Exception("Todo not found")
+
+    if todo_data.title is not None:
         todo.title = todo_data.title
-        todo.description = todo_data.description
-        session.commit()
-        session.refresh(todo)
+    if todo_data.completed is not None:
+        todo.completed = todo_data.completed
+
+    db.commit()
+    db.refresh(todo)
     return todo

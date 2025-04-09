@@ -6,7 +6,6 @@ export interface Todo {
 
 export interface TodoCreate {
   title: string
-  completed?: boolean
 }
 
 const API_BASE = 'http://localhost:8000/todos/'
@@ -34,7 +33,7 @@ export class TodoModel {
     return await response.json()
   }
 
-  static async update(id: number, todo: Todo): Promise<Todo> {
+  static async update(id: number, todo: Partial<Todo>): Promise<Todo> {
     const response = await fetch(`${API_BASE}${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
