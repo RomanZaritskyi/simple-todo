@@ -10,16 +10,20 @@ export interface TodoCreate {
 
 const API_BASE = 'http://localhost:8000/todos/'
 
+function handleError(message: string, response: Response) {
+  if (!response.ok) throw new Error(message)
+}
+
 export class TodoModel {
   static async getAll(): Promise<Todo[]> {
     const response = await fetch(API_BASE)
-    if (!response.ok) throw new Error('Помилка при завантаженні задач')
+    handleError('Something went wrong when downloading', response)
     return await response.json()
   }
 
   static async get(id: number): Promise<Todo> {
     const response = await fetch(`${API_BASE}${id}`)
-    if (!response.ok) throw new Error('Помилка при завантаженні задачі')
+    handleError('Something went wrong when downloading', response)
     return await response.json()
   }
 
@@ -29,7 +33,7 @@ export class TodoModel {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(todo),
     })
-    if (!response.ok) throw new Error('Помилка при створенні задачі')
+    handleError('Something went wrong when creating', response)
     return await response.json()
   }
 
@@ -39,19 +43,19 @@ export class TodoModel {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(todo),
     })
-    if (!response.ok) throw new Error('Помилка при оновленні задачі')
+    handleError('Something went wrong when updating', response)
     return await response.json()
   }
 
   static async delete(id: number): Promise<void> {
     const response = await fetch(`${API_BASE}${id}`, { method: 'DELETE' })
-    if (!response.ok) throw new Error('Помилка при видаленні задачі')
+    handleError('Something went wrong when deleting', response)
   }
 
   static async deleteAll(): Promise<void> {
     const response = await fetch(`${API_BASE}all`, {
       method: 'DELETE',
     })
-    if (!response.ok) throw new Error('Помилка при видаленні всіх задач')
+    handleError('Something went wrong when deleting all', response)
   }
 }

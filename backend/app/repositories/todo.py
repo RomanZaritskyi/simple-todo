@@ -1,4 +1,4 @@
-from sqlmodel import Session, select, delete
+from sqlmodel import Session, delete, select
 
 from app.models.todo import Todo
 from app.schemas.todo import TodoCreate, TodoUpdate
@@ -52,6 +52,7 @@ def delete_todo(db: Session, todo_id: int) -> None:
 
     db.delete(todo)
     db.commit()
+
 
 def delete_all_todos(db: Session) -> None:
     db.exec(delete(Todo))
