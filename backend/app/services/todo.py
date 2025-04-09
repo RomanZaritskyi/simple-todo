@@ -19,3 +19,11 @@ def get_todo_by_id(session: Session, todo_id: int) -> Todo | None:
 
 def update_todo_service(session: Session, todo_id: int, data: TodoUpdate) -> Todo:
     return todo_repo.update_todo(session, todo_id, data)
+
+
+def delete_todo_service(session: Session, todo_id: int) -> None:
+    return todo_repo.delete_todo(session, todo_id)
+
+
+def delete_all_todos_service(session: Session) -> None:
+    return todo_repo.delete_all_todos(session)

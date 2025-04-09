@@ -35,3 +35,21 @@ def update_todo(
         return todo_service.update_todo_service(session, todo_id, todo_data)
     except Exception:
         raise HTTPException(status_code=404, detail="Todo not found")
+    
+
+@router.delete("/all", status_code=204)
+def delete_all_todos(session: Session = Depends(get_session)) -> None:
+    try:
+        todo_service.delete_all_todos_service(session)
+    except Exception:
+        raise HTTPException(status_code=500, detail="Не вдалося видалити всі TODO")
+    
+
+@router.delete("/{todo_id}", status_code=204)
+def delete_todo(todo_id: int, session: Session = Depends(get_session)) -> None:
+    try:
+        todo_service.delete_todo_service(session, todo_id)
+    except Exception:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    
+    

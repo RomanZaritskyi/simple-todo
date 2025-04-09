@@ -44,16 +44,14 @@ export class TodoModel {
   }
 
   static async delete(id: number): Promise<void> {
-    const response = await fetch(`${API_BASE}${id}`, {
-      method: 'DELETE',
-    })
+    const response = await fetch(`${API_BASE}${id}`, { method: 'DELETE' })
     if (!response.ok) throw new Error('Помилка при видаленні задачі')
   }
 
   static async deleteAll(): Promise<void> {
-    const response = await fetch(`${API_BASE}`, {
+    const response = await fetch(`${API_BASE}all`, {
       method: 'DELETE',
     })
-    if (!response.ok) throw new Error('Помилка при видаленні задач')
+    if (!response.ok) throw new Error('Помилка при видаленні всіх задач')
   }
 }

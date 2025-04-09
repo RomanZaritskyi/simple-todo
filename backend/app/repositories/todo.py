@@ -1,4 +1,4 @@
-from sqlmodel import Session, select
+from sqlmodel import Session, select, delete
 
 from app.models.todo import Todo
 from app.schemas.todo import TodoCreate, TodoUpdate
@@ -24,16 +24,11 @@ def create_todo(session: Session, todo_create: TodoCreate) -> Todo:
     return todo
 
 
-def delete_todo(session: Session, todo_id: int) -> Todo | None:
-    todo = get_todo_by_id(session, todo_id)
-    if todo:
-        session.delete(todo)
-        session.commit()
-    return todo
-
-
 def update_todo(db: Session, todo_id: int, todo_data: TodoUpdate) -> Todo:
-    todo = db.exec(Todo).filter(Todo.id == todo_id).first()
+    statement = select(Todo).where(Todo.id == todo_id)
+    result = db.exec(statement)
+    todo = result.first()
+
     if not todo:
         raise Exception("Todo not found")
 
@@ -45,3 +40,19 @@ def update_todo(db: Session, todo_id: int, todo_data: TodoUpdate) -> Todo:
     db.commit()
     db.refresh(todo)
     return todo
+
+
+def delete_todo(db: Session, todo_id: int) -> None:
+    statement = select(Todo).where(Todo.id == todo_id)
+    result = db.exec(statement)
+    todo = result.first()
+
+    if not todo:
+        raise Exception("Todo not found")
+
+    db.delete(todo)
+    db.commit()
+
+def delete_all_todos(db: Session) -> None:
+    db.exec(delete(Todo))
+    db.commit()
